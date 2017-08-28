@@ -39,6 +39,10 @@ namespace SupaTrupa.WebAPI
                         options.Data = Configuration.GetValue<string>("MongoDb:Data");
                     }
                 )
+                .AddTransient(
+                    serviceType: typeof(IRepository<>),
+                    implementationType: typeof(MongoRepository<>)
+                )
                 .AddCors()
                 .AddMvc();
         }
