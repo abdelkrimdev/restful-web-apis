@@ -19,69 +19,69 @@ namespace SupaTrupa.WebAPI.Shared.Contracts
         /// </summary>
         /// <param name="id">The value representing the ObjectId of the entity to retrieve.</param>
         /// <returns>The Entity T.</returns>
-        Task<T> GetByIdAsync(TKey id);
+        Task<T> GetAsync(TKey id);
+
+        /// <summary>
+        /// Returns the entities matching the predicate.
+        /// </summary>
+        /// <param name="predicate">The expression.</param>
+        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate);
 
         /// <summary>
         /// Adds the new entity in the repository.
         /// </summary>
         /// <param name="entity">The entity to add.</param>
-        /// <returns>The added entity including its new ObjectId.</returns>
-        Task<T> AddAsync(T entity);
+        Task AddAsync(T entity);
 
         /// <summary>
         /// Adds the new entities in the repository.
         /// </summary>
         /// <param name="entities">The entities of type T.</param>
-        void AddAsync(IEnumerable<T> entities);
+        Task AddAsync(IEnumerable<T> entities);
 
         /// <summary>
-        /// Upserts an entity.
+        /// Update an entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns>The updated entity.</returns>
-        Task<T> UpdateAsync(T entity);
+        Task UpdateAsync(T entity);
 
         /// <summary>
-        /// Upserts the entities.
+        /// Update the entities.
         /// </summary>
         /// <param name="entities">The entities to update.</param>
-        void UpdateAsync(IEnumerable<T> entities);
+        Task UpdateAsync(IEnumerable<T> entities);
 
         /// <summary>
         /// Deletes an entity from the repository by its id.
         /// </summary>
         /// <param name="id">The entity's id.</param>
-        void DeleteAsync(TKey id);
+        Task DeleteAsync(TKey id);
 
         /// <summary>
         /// Deletes the given entity.
         /// </summary>
         /// <param name="entity">The entity to delete.</param>
-        void DeleteAsync(T entity);
+        Task DeleteAsync(T entity);
 
         /// <summary>
         /// Deletes the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
-        void DeleteAsync(Expression<Func<T, bool>> predicate);
+        Task DeleteAsync(Expression<Func<T, bool>> predicate);
 
-        /// <summary>
-        /// Deletes all entities in the repository.
-        /// </summary>
-        void DeleteAllAsync();
+		/// <summary>
+		/// Checks if the entity exists for given predicate.
+		/// </summary>
+		/// <param name="predicate">The expression.</param>
+		/// <returns>True when an entity matching the predicate exists, false otherwise.</returns>
+		bool Exists(Expression<Func<T, bool>> predicate);
 
-        /// <summary>
-        /// Counts the total entities in the repository.
-        /// </summary>
-        /// <returns>Count of entities in the repository.</returns>
-        Task<long> CountAsync();
-
-        /// <summary>
-        /// Checks if the entity exists for given predicate.
-        /// </summary>
-        /// <param name="predicate">The expression.</param>
-        /// <returns>True when an entity matching the predicate exists, false otherwise.</returns>
-        bool Exists(Expression<Func<T, bool>> predicate);
+		/// <summary>
+		/// Counts the total entities in the repository.
+		/// </summary>
+		/// <returns>Count of entities in the repository.</returns>
+		long Count();
     }
 
     /// <summary>

@@ -1,4 +1,4 @@
-namespace SupaTrupa.WebAPI.AppSettings
+namespace SupaTrupa.WebAPI.Settings
 {
     public class MongoDbSettings
     {

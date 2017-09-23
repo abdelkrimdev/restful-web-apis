@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-using SupaTrupa.WebAPI.AppSettings;
+using SupaTrupa.WebAPI.Settings;
 using SupaTrupa.WebAPI.Shared.Contracts;
 using SupaTrupa.WebAPI.Shared.MongoDb;
 

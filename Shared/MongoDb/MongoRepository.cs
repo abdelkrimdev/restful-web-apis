@@ -5,10 +5,9 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
-using MongoDB.Bson;
 using MongoDB.Driver;
 
-using SupaTrupa.WebAPI.AppSettings;
+using SupaTrupa.WebAPI.Settings;
 using SupaTrupa.WebAPI.Shared.Contracts;
 
 namespace SupaTrupa.WebAPI.Shared.MongoDb
@@ -39,7 +38,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <param name="connectionString">connection string to use for connecting to MongoDB.</param>
         public MongoRepository(string connectionString)
         {
-            _collection = MongoService.GetCollectionFromConnectionString<T, TKey>(connectionString);
+            _collection = MongoService.GetCollectionFromConnectionString<T>(connectionString);
         }
 
         /// <summary>
@@ -49,7 +48,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <param name="collectionName">The name of the collection to use.</param>
         public MongoRepository(string connectionString, string collectionName)
         {
-            _collection = MongoService.GetCollectionFromConnectionString<T, TKey>(connectionString, collectionName);
+            _collection = MongoService.GetCollectionFromConnectionString<T>(connectionString, collectionName);
         }
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <param name="url">Url to use for connecting to MongoDB.</param>
         public MongoRepository(MongoUrl url)
         {
-            _collection = MongoService.GetCollectionFromUrl<T, TKey>(url);
+            _collection = MongoService.GetCollectionFromUrl<T>(url);
         }
 
         /// <summary>
@@ -68,7 +67,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <param name="collectionName">The name of the collection to use.</param>
         public MongoRepository(MongoUrl url, string collectionName)
         {
-            _collection = MongoService.GetCollectionFromUrl<T, TKey>(url, collectionName);
+            _collection = MongoService.GetCollectionFromUrl<T>(url, collectionName);
         }
 
         /// <summary>
@@ -76,54 +75,56 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         /// <param name="id">The Id of the entity to retrieve.</param>
         /// <returns>The Entity T.</returns>
-        public virtual Task<T> GetByIdAsync(TKey id) => GetByIdAsync(BsonValue.Create(id).AsObjectId);
+        public virtual async Task<T> GetAsync(TKey id)
+        {
+            var result = await GetAsync(e => e.Id.Equals(id));
+            return result.SingleOrDefault();
+        }
 
         /// <summary>
-        /// Returns the T by its given id.
+        /// Returns the entities matching the predicate.
         /// </summary>
-        /// <param name="id">The Id of the entity to retrieve.</param>
-        /// <returns>The Entity T.</returns>
-        public virtual async Task<T> GetByIdAsync(ObjectId id)
+        /// <param name="predicate">The expression.</param>
+        public virtual async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate)
         {
-            using (var cursor = await _collection.FindAsync(e => e.Id.Equals(id)))
+            var result = Enumerable.Empty<T>();
+            using (var cursor = await _collection.FindAsync(predicate))
             {
-                return cursor.Current.SingleOrDefault();
+                while (await cursor.MoveNextAsync())
+                {
+                    result = result.Concat(cursor.Current);
+                }
             }
+            return result;
         }
 
         /// <summary>
         /// Adds the new entity in the repository.
         /// </summary>
         /// <param name="entity">The entity T.</param>
-        /// <returns>The added entity including its new ObjectId.</returns>
-        public virtual async Task<T> AddAsync(T entity)
-        {
-            await _collection.InsertOneAsync(entity);
-
-            return entity;
-        }
+        public virtual async Task AddAsync(T entity) => await _collection.InsertOneAsync(entity);
 
         /// <summary>
         /// Adds the new entities in the repository.
         /// </summary>
         /// <param name="entities">The entities of type T.</param>
-        public virtual void AddAsync(IEnumerable<T> entities) => _collection.InsertManyAsync(entities);
+        public virtual async Task AddAsync(IEnumerable<T> entities) => await _collection.InsertManyAsync(entities);
 
         /// <summary>
         /// Update an entity.
         /// </summary>
         /// <param name="entity">The entity.</param>
         /// <returns>The updated entity.</returns>
-        public virtual async Task<T> UpdateAsync(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
-            return await _collection.FindOneAndReplaceAsync(e => e.Id.Equals(entity.Id), entity);
+            await _collection.FindOneAndReplaceAsync(e => e.Id.Equals(entity.Id), entity);
         }
 
         /// <summary>
         /// Update the entities.
         /// </summary>
         /// <param name="entities">The entities to update.</param>
-        public virtual async void UpdateAsync(IEnumerable<T> entities)
+        public virtual async Task UpdateAsync(IEnumerable<T> entities)
         {
             foreach (T entity in entities)
             {
@@ -135,43 +136,45 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// Deletes an entity from the repository by its id.
         /// </summary>
         /// <param name="id">The entity's id.</param>
-        public virtual void DeleteAsync(TKey id) => DeleteAsync(BsonValue.Create(id).AsObjectId);
+        public virtual async Task DeleteAsync(TKey id)
+        {
+            await _collection.FindOneAndDeleteAsync(e => e.Id.Equals(id));
+        }
 
         /// <summary>
         /// Deletes the given entity.
         /// </summary>
         /// <param name="entity">The entity to delete.</param>
-        public virtual void DeleteAsync(T entity) => DeleteAsync(entity.Id);
-
-        /// <summary>
-        /// Deletes an entity from the repository by its ObjectId.
-        /// </summary>
-        /// <param name="id">The ObjectId of the entity.</param>
-        public virtual void DeleteAsync(ObjectId id) => _collection.FindOneAndDeleteAsync(e => e.Id.Equals(id));
+        public virtual async Task DeleteAsync(T entity)
+        {
+            await DeleteAsync(entity.Id);
+        }
 
         /// <summary>
         /// Deletes the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
-        public virtual async void DeleteAsync(Expression<Func<T, bool>> predicate) => await _collection.DeleteManyAsync(predicate);
-
-        /// <summary>
-        /// Deletes all entities in the repository.
-        /// </summary>
-        public virtual async void DeleteAllAsync() => await _collection.DeleteManyAsync(Builders<T>.Filter.Empty);
-
-        /// <summary>
-        /// Counts the total entities in the repository.
-        /// </summary>
-        /// <returns>Count of entities in the collection.</returns>
-        public virtual async Task<long> CountAsync() => await _collection.CountAsync(Builders<T>.Filter.Empty);
+        public virtual async Task DeleteAsync(Expression<Func<T, bool>> predicate)
+        {
+            await _collection.DeleteManyAsync(predicate);
+        }
 
         /// <summary>
         /// Checks if the entity exists for given predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
         /// <returns>True when an entity matching the predicate exists, false otherwise.</returns>
-        public virtual bool Exists(Expression<Func<T, bool>> predicate) => _collection.AsQueryable<T>().Any(predicate);
+        public virtual bool Exists(Expression<Func<T, bool>> predicate)
+        {
+            return _collection.AsQueryable().Any(predicate);
+        }
+
+
+        /// <summary>
+        /// Counts the total entities in the repository.
+        /// </summary>
+        /// <returns>Count of entities in the collection.</returns>
+        public virtual long Count() => _collection.Count(Builders<T>.Filter.Empty);
 
         #region IQueryable<T>
 
@@ -179,13 +182,13 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// Returns an enumerator that iterates through a collection.
         /// </summary>
         /// <returns>An IEnumerator of type T object that can be used to iterate through the collection.</returns>
-        public virtual IEnumerator<T> GetEnumerator() => _collection.AsQueryable<T>().GetEnumerator();
+        public virtual IEnumerator<T> GetEnumerator() => _collection.AsQueryable().GetEnumerator();
 
         /// <summary>
         /// Returns an enumerator that iterates through a collection.
         /// </summary>
         /// <returns>An IEnumerator object that can be used to iterate through the collection.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => _collection.AsQueryable<T>().GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => _collection.AsQueryable().GetEnumerator();
 
         /// <summary>
         /// Gets the type of the element(s) that are returned.
@@ -193,7 +196,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         public virtual Type ElementType
         {
-            get { return _collection.AsQueryable<T>().ElementType; }
+            get { return _collection.AsQueryable().ElementType; }
         }
 
         /// <summary>
@@ -201,7 +204,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         public virtual Expression Expression
         {
-            get { return _collection.AsQueryable<T>().Expression; }
+            get { return _collection.AsQueryable().Expression; }
         }
 
         /// <summary>
@@ -209,7 +212,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         public virtual IQueryProvider Provider
         {
-            get { return _collection.AsQueryable<T>().Provider; }
+            get { return _collection.AsQueryable().Provider; }
         }
 
         #endregion
@@ -219,9 +222,9 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
     /// Deals with entities in MongoDb.
     /// </summary>
     /// <typeparam name="T">The type contained in the repository.</typeparam>
-    /// <remarks>Entities are assumed to use strings for Id's.</remarks>
+    /// <remarks>Mongo Entities are assumed to use strings for Id's.</remarks>
     public class MongoRepository<T> : MongoRepository<T, string>, IRepository<T>
-        where T : IEntity<string>
+        where T : MongoEntity
     {
         /// <summary>
         /// Initializes a new instance of the MongoRepository class.
@@ -229,21 +232,6 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         public MongoRepository(IOptions<MongoDbSettings> settings)
             : base(settings) { }
-
-        /// <summary>
-        /// Initializes a new instance of the MongoRepository class.
-        /// </summary>
-        /// <param name="url">Url to use for connecting to MongoDB.</param>
-        public MongoRepository(MongoUrl url)
-            : base(url) { }
-
-        /// <summary>
-        /// Initializes a new instance of the MongoRepository class.
-        /// </summary>
-        /// <param name="url">Url to use for connecting to MongoDB.</param>
-        /// <param name="collectionName">The name of the collection to use.</param>
-        public MongoRepository(MongoUrl url, string collectionName)
-            : base(url, collectionName) { }
 
         /// <summary>
         /// Initializes a new instance of the MongoRepository class.
@@ -259,5 +247,20 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <param name="collectionName">The name of the collection to use.</param>
         public MongoRepository(string connectionString, string collectionName)
             : base(connectionString, collectionName) { }
+
+        /// <summary>
+        /// Initializes a new instance of the MongoRepository class.
+        /// </summary>
+        /// <param name="url">Url to use for connecting to MongoDB.</param>
+        public MongoRepository(MongoUrl url)
+            : base(url) { }
+
+        /// <summary>
+        /// Initializes a new instance of the MongoRepository class.
+        /// </summary>
+        /// <param name="url">Url to use for connecting to MongoDB.</param>
+        /// <param name="collectionName">The name of the collection to use.</param>
+        public MongoRepository(MongoUrl url, string collectionName)
+            : base(url, collectionName) { }
     }
 }

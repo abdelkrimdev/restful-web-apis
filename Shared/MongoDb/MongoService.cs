@@ -2,16 +2,15 @@ using System;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
-using SupaTrupa.WebAPI.AppSettings;
+using SupaTrupa.WebAPI.Settings;
 using SupaTrupa.WebAPI.Shared.Attributes;
-using SupaTrupa.WebAPI.Shared.Contracts;
 
 namespace SupaTrupa.WebAPI.Shared.MongoDb
 {
     /// <summary>
-    /// Internal miscellaneous utility functions.
+    /// Mongo Service used to create and get collections.
     /// </summary>
-    public class MongoService
+    public static class MongoService
     {
         /// <summary>
         /// Retrieves the default connection string from the appsettings.json file.
@@ -20,6 +19,9 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <returns>Returns the default connection string from the appsettings.json file.</returns>
         public static string GetConnectionString(IOptions<MongoDbSettings> settings)
         {
+			if (settings == null)
+				throw new ArgumentNullException(nameof(settings));
+            
             var mongo = settings.Value;
 
             return $"mongodb://{mongo.User}:{mongo.Pass}@{mongo.Host}:{mongo.Port}/{mongo.Data}";
@@ -29,58 +31,64 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// Creates and returns a MongoCollection from the specified type and connection string.
         /// </summary>
         /// <typeparam name="T">The type to get the collection of.</typeparam>
-        /// <typeparam name="TKey">The type used for the entity's Id.</typeparam>
         /// <param name="connectionString">The connection string to use to get the collection from.</param>
         /// <returns>Returns a MongoCollection from the specified type and connection string.</returns>
-        public static IMongoCollection<T> GetCollectionFromConnectionString<T, TKey>(string connectionString)
-            where T : IEntity<TKey>
+        public static IMongoCollection<T> GetCollectionFromConnectionString<T>(string connectionString)
         {
-            return MongoService.GetCollectionFromConnectionString<T, TKey>(connectionString, GetCollectionName<T, TKey>());
+			if (string.IsNullOrEmpty(connectionString))
+				throw new ArgumentNullException(nameof(connectionString));
+            
+            return GetCollectionFromConnectionString<T>(connectionString, GetCollectionName<T>());
         }
 
         /// <summary>
         /// Creates and returns a MongoCollection from the specified type and connection string.
         /// </summary>
         /// <typeparam name="T">The type to get the collection of.</typeparam>
-        /// <typeparam name="TKey">The type used for the entity's Id.</typeparam>
         /// <param name="connectionString">The connection string to use to get the collection from.</param>
         /// <param name="collectionName">The name of the collection to use.</param>
         /// <returns>Returns a MongoCollection from the specified type and connection string.</returns>
-        public static IMongoCollection<T> GetCollectionFromConnectionString<T, TKey>(string connectionString, string collectionName)
-            where T : IEntity<TKey>
+        public static IMongoCollection<T> GetCollectionFromConnectionString<T>(string connectionString, string collectionName)
         {
-            return MongoService
-                .GetDatabaseFromUrl(new MongoUrl(connectionString))
-                .GetCollection<T>(collectionName);
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentNullException(nameof(connectionString));
+
+            if (string.IsNullOrEmpty(collectionName))
+                throw new ArgumentNullException(nameof(collectionName));
+            
+            return GetDatabaseFromUrl(MongoUrl.Create(connectionString)).GetCollection<T>(collectionName);
         }
 
         /// <summary>
         /// Creates and returns a MongoCollection from the specified type and url.
         /// </summary>
         /// <typeparam name="T">The type to get the collection of.</typeparam>
-        /// <typeparam name="TKey">The type used for the entity's Id.</typeparam>
         /// <param name="url">The url to use to get the collection from.</param>
         /// <returns>Returns a MongoCollection from the specified type and url.</returns>
-        public static IMongoCollection<T> GetCollectionFromUrl<T, TKey>(MongoUrl url)
-            where T : IEntity<TKey>
+        public static IMongoCollection<T> GetCollectionFromUrl<T>(MongoUrl url)
         {
-            return MongoService.GetCollectionFromUrl<T, TKey>(url, GetCollectionName<T, TKey>());
+            if (url == null)
+                throw new ArgumentNullException(nameof(url));
+
+            return GetCollectionFromUrl<T>(url, GetCollectionName<T>());
         }
 
         /// <summary>
         /// Creates and returns a MongoCollection from the specified type and url.
         /// </summary>
         /// <typeparam name="T">The type to get the collection of.</typeparam>
-        /// <typeparam name="TKey">The type used for the entity's Id.</typeparam>
         /// <param name="url">The url to use to get the collection from.</param>
         /// <param name="collectionName">The name of the collection to use.</param>
         /// <returns>Returns a MongoCollection from the specified type and url.</returns>
-        public static IMongoCollection<T> GetCollectionFromUrl<T, TKey>(MongoUrl url, string collectionName)
-            where T : IEntity<TKey>
+        public static IMongoCollection<T> GetCollectionFromUrl<T>(MongoUrl url, string collectionName)
         {
-            return MongoService
-                .GetDatabaseFromUrl(url)
-                .GetCollection<T>(collectionName);
+			if (url == null)
+				throw new ArgumentNullException(nameof(url));
+
+            if (string.IsNullOrEmpty(collectionName))
+				throw new ArgumentNullException(nameof(collectionName));
+            
+            return GetDatabaseFromUrl(url).GetCollection<T>(collectionName);
         }
 
         /// <summary>
@@ -88,7 +96,26 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         /// <param name="url">The url to use to get the database from.</param>
         /// <returns>Returns a MongoDatabase from the specified url.</returns>
-        private static IMongoDatabase GetDatabaseFromUrl(MongoUrl url) => new MongoClient(url).GetDatabase(url.DatabaseName);
+        public static IMongoDatabase GetDatabaseFromUrl(MongoUrl url)
+        {
+			if (url == null)
+                throw new ArgumentNullException(nameof(url));
+            
+            return GetClientFromUrl(url).GetDatabase(url.DatabaseName);
+        }
+
+        /// <summary>
+        /// Creates and returns a MongoClient from the specified url.
+        /// </summary>
+        /// <param name="url">The url to use to get the client from.</param>
+        /// <returns>Returns a MongoClient from the specified url.</returns>
+        public static IMongoClient GetClientFromUrl(MongoUrl url)
+        {
+            if (url == null)
+                throw new ArgumentNullException(nameof(url));
+
+			return new MongoClient(url);
+        }
 
         /// <summary>
         /// Determines the collection name for T and assures it is not empty
@@ -96,12 +123,12 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <typeparam name="T">The type to determine the collection name for.</typeparam>
         /// <typeparam name="TKey">The type used for the entity's Id.</typeparam>
         /// <returns>Returns the collection name for T.</returns>
-        private static string GetCollectionName<T, TKey>() where T : IEntity<TKey>
+        static string GetCollectionName<T>()
         {
             string collectionName;
             if (!typeof(T).BaseType.Equals(typeof(object)))
             {
-                collectionName = GetCollectionNameFromType<T, TKey>();
+                collectionName = GetCollectionNameFromType<T>();
             }
             else
             {
@@ -121,7 +148,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <typeparam name="T">The type to get the collection name from.</typeparam>
         /// <typeparam name="TKey">The type used for the entity's Id.</typeparam>
         /// <returns>Returns the collection name from the specified type.</returns>
-        private static string GetCollectionNameFromType<T, TKey>()
+        static string GetCollectionNameFromType<T>()
         {
             string collectionName;
 
@@ -134,10 +161,10 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
             }
             else
             {
-                if (typeof(IEntity<TKey>).IsAssignableFrom(typeof(T)))
+                if (typeof(MongoEntity).IsAssignableFrom(typeof(T)))
                 {
                     // No attribute found, get name of the basetype
-                    collectionName = typeof(T).GetType().BaseType.Name;
+                    collectionName = typeof(T).BaseType.Name;
                 }
                 else
                 {
@@ -153,7 +180,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         /// <typeparam name="T">The type to get the collection name from.</typeparam>
         /// <returns>Returns the collection name from the specified type.</returns>
-        private static string GetCollectioNameFromInterface<T>()
+        static string GetCollectioNameFromInterface<T>()
         {
             string collectionName;
 

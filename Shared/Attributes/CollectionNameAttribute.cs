@@ -16,7 +16,7 @@ namespace SupaTrupa.WebAPI.Shared.Attributes
         public CollectionNameAttribute(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Empty collection name not allowed", "name");
+                throw new ArgumentException("Empty collection name not allowed", nameof(name));
 
             Name = name;
         }

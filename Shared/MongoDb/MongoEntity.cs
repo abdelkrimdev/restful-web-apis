@@ -1,3 +1,4 @@
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 using SupaTrupa.WebAPI.Shared.Contracts;
@@ -5,16 +6,24 @@ using SupaTrupa.WebAPI.Shared.Contracts;
 namespace SupaTrupa.WebAPI.Shared.MongoDb
 {
     /// <summary>
-    /// Abstract Entity for all the BusinessEntities.
+    /// Abstract Mongo Entity.
     /// </summary>
-    /// <typeparam name="TKey">The type used for the entity's Id.</typeparam>
-    public abstract class MongoEntity<TKey> : IEntity<TKey>
+    /// <remarks>Mongo Entities are assumed to use strings for Id's.</remarks>
+    public abstract class MongoEntity : IEntity<string>
     {
+        /// <summary>
+        /// Initializes a new instance of the MongoEntity class.
+        /// </summary>
+        protected MongoEntity()
+        {
+            Id = ObjectId.GenerateNewId().ToString();
+        }
+
         /// <summary>
         /// Gets or sets the id for this object (the primary record for an entity).
         /// </summary>
         /// <value>The id for this object (the primary record for an entity).</value>
         [BsonId]
-        public virtual TKey Id { get; set; }
+        public string Id { get; set; }
     }
 }
