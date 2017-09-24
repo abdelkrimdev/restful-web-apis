@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  supatrupa.webapi:
+    image: iodine/supatrupa.webapi
+    build: .
+    ports:
+      - 5000:80
