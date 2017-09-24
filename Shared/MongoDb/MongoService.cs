@@ -17,7 +17,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         /// <param name="settings">The MongoDb settings object to use to construct the connection string.</param>
         /// <returns>Returns the default connection string from the appsettings.json file.</returns>
-        public static string GetConnectionString(IOptions<MongoDbSettings> settings)
+        public static string GetConnectionString(IOptions<MongoSettings> settings)
         {
 			if (settings == null)
 				throw new ArgumentNullException(nameof(settings));

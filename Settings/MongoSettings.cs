@@ -1,6 +1,6 @@
 namespace SupaTrupa.WebAPI.Settings
 {
-    public class MongoDbSettings
+    public class MongoSettings
     {
         public string User { get; set; }
         public string Pass { get; set; }

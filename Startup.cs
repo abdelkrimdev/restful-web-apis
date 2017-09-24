@@ -29,14 +29,14 @@ namespace SupaTrupa.WebAPI
         {
             // Add framework services.
             services
-                .Configure<MongoDbSettings>(
+                .Configure<MongoSettings>(
                     (options) =>
                     {
-                        options.User = Configuration.GetValue<string>("MongoDb:User");
-                        options.Pass = Configuration.GetValue<string>("MongoDb:Pass");
-                        options.Host = Configuration.GetValue<string>("MongoDb:Host");
-                        options.Port = Configuration.GetValue<string>("MongoDb:Port");
-                        options.Data = Configuration.GetValue<string>("MongoDb:Data");
+                        options.User = Configuration.GetValue<string>("Mongo:User");
+                        options.Pass = Configuration.GetValue<string>("Mongo:Pass");
+                        options.Host = Configuration.GetValue<string>("Mongo:Host");
+                        options.Port = Configuration.GetValue<string>("Mongo:Port");
+                        options.Data = Configuration.GetValue<string>("Mongo:Data");
                     }
                 )
                 .AddTransient(

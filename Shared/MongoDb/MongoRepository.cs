@@ -29,7 +29,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// Initializes a new instance of the MongoRepository class.
         /// Uses the default connection string and Database name from the appsettings.json file.
         /// </summary>
-        public MongoRepository(IOptions<MongoDbSettings> settings)
+        public MongoRepository(IOptions<MongoSettings> settings)
             : this(MongoService.GetConnectionString(settings)) { }
 
         /// <summary>
@@ -230,7 +230,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// Initializes a new instance of the MongoRepository class.
         /// Uses the default connection string and Database name from the appsettings.json file.
         /// </summary>
-        public MongoRepository(IOptions<MongoDbSettings> settings)
+        public MongoRepository(IOptions<MongoSettings> settings)
             : base(settings) { }
 
         /// <summary>
