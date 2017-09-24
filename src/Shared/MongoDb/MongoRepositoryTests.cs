@@ -18,13 +18,13 @@ namespace SupaTrupa.WebAPI.Tests.Shared.MongoDb
     [TestFixture]
     public class MongoRepositoryTests
     {
-        IOptions<MongoDbSettings> _settings;
+        IOptions<MongoSettings> _settings;
 		IRepository<Person> _personRepository;
 
 		[SetUp]
 		public void Initialize()
 		{
-			_settings = Options.Create(new MongoDbSettings
+			_settings = Options.Create(new MongoSettings
 			{
 				User = "iodine",
 				Pass = "secret",
