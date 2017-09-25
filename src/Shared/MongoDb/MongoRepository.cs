@@ -85,7 +85,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// Returns the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
-        public virtual async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task<IQueryable<T>> GetAsync(Expression<Func<T, bool>> predicate)
         {
             var result = Enumerable.Empty<T>();
             using (var cursor = await _collection.FindAsync(predicate))
@@ -95,7 +95,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
                     result = result.Concat(cursor.Current);
                 }
             }
-            return result;
+            return result.AsQueryable();
         }
 
         /// <summary>
@@ -175,47 +175,6 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// </summary>
         /// <returns>Count of entities in the collection.</returns>
         public virtual long Count() => _collection.Count(Builders<T>.Filter.Empty);
-
-        #region IQueryable<T>
-
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>An IEnumerator of type T object that can be used to iterate through the collection.</returns>
-        public virtual IEnumerator<T> GetEnumerator() => _collection.AsQueryable().GetEnumerator();
-
-        /// <summary>
-        /// Returns an enumerator that iterates through a collection.
-        /// </summary>
-        /// <returns>An IEnumerator object that can be used to iterate through the collection.</returns>
-        IEnumerator IEnumerable.GetEnumerator() => _collection.AsQueryable().GetEnumerator();
-
-        /// <summary>
-        /// Gets the type of the element(s) that are returned.
-        /// When the expression tree associated with this instance of IQueryable is executed.
-        /// </summary>
-        public virtual Type ElementType
-        {
-            get { return _collection.AsQueryable().ElementType; }
-        }
-
-        /// <summary>
-        /// Gets the expression tree that is associated with the instance of IQueryable.
-        /// </summary>
-        public virtual Expression Expression
-        {
-            get { return _collection.AsQueryable().Expression; }
-        }
-
-        /// <summary>
-        /// Gets the query provider that is associated with this data source.
-        /// </summary>
-        public virtual IQueryProvider Provider
-        {
-            get { return _collection.AsQueryable().Provider; }
-        }
-
-        #endregion
     }
 
     /// <summary>

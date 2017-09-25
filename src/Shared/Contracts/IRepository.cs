@@ -11,8 +11,7 @@ namespace SupaTrupa.WebAPI.Shared.Contracts
     /// </summary>
     /// <typeparam name="T">The type contained in the repository.</typeparam>
     /// <typeparam name="TKey">The type used for the entity's Id.</typeparam>
-    public interface IRepository<T, TKey> : IQueryable<T>
-        where T : IEntity<TKey>
+    public interface IRepository<T, TKey> where T : IEntity<TKey>
     {
         /// <summary>
         /// Returns the T by its given id.
@@ -25,7 +24,7 @@ namespace SupaTrupa.WebAPI.Shared.Contracts
         /// Returns the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
-        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate);
+        Task<IQueryable<T>> GetAsync(Expression<Func<T, bool>> predicate);
 
         /// <summary>
         /// Adds the new entity in the repository.
@@ -89,7 +88,6 @@ namespace SupaTrupa.WebAPI.Shared.Contracts
     /// </summary>
     /// <typeparam name="T">The type contained in the repository.</typeparam>
     /// <remarks>Entities are assumed to use strings for Id's.</remarks>
-    public interface IRepository<T> : IRepository<T, string>, IQueryable<T>
-        where T : IEntity<string>
+    public interface IRepository<T> : IRepository<T, string> where T : IEntity<string>
     { }
 }
