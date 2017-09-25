@@ -99,6 +99,7 @@ namespace SupaTrupa.WebAPI.Tests.Shared.MongoDb
 			foreach (var person in persons)
 			{
 				person.Single = false;
+                person.Address.Country = person.Address.Country.ToUpper();
 			}
 
 			// Act
@@ -106,8 +107,15 @@ namespace SupaTrupa.WebAPI.Tests.Shared.MongoDb
 
             // Assert
             var updatedPersons = await _personRepository.GetAsync(p => !p.Single);
-			Assert.NotNull(updatedPersons);
-            Assert.AreEqual(persons.Count, updatedPersons.Count());
+			
+            Assert.NotNull(updatedPersons);
+			Assert.AreEqual(persons.Count, updatedPersons.Count());
+
+            for (int index = 0, count = persons.Count; index < count; index++)
+            {
+                Assert.AreEqual(persons[index].Address.Country,
+                                updatedPersons.ElementAt(index).Address.Country);
+            }
         }
 
 		[Test]
