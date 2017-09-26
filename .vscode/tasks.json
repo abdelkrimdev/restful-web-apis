@@ -15,7 +15,7 @@
         {
             "taskName": "publish",
             "args" : [
-                "publish", "--configuration", "Release", "--output", "out"
+                "publish", "--configuration", "Release", "--output", "${workspaceRoot}/out"
             ],
             "isBuildCommand": true,
             "problemMatcher": "$msCompile"

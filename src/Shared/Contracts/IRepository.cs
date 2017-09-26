@@ -24,7 +24,7 @@ namespace SupaTrupa.WebAPI.Shared.Contracts
         /// Returns the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
-        Task<IQueryable<T>> GetAsync(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate);
 
         /// <summary>
         /// Adds the new entity in the repository.

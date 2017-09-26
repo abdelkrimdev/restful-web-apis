@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -77,25 +76,16 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// <returns>The Entity T.</returns>
         public virtual async Task<T> GetAsync(TKey id)
         {
-            var result = await GetAsync(e => e.Id.Equals(id));
-            return result.SingleOrDefault();
+            return (await GetAsync(e => e.Id.Equals(id))).SingleOrDefault();
         }
 
         /// <summary>
         /// Returns the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
-        public virtual async Task<IQueryable<T>> GetAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate)
         {
-            var result = Enumerable.Empty<T>();
-            using (var cursor = await _collection.FindAsync(predicate))
-            {
-                while (await cursor.MoveNextAsync())
-                {
-                    result = result.Concat(cursor.Current);
-                }
-            }
-            return result.AsQueryable();
+            return await Task.Run(() => _collection.AsQueryable().Where(predicate));
         }
 
         /// <summary>
