@@ -14,9 +14,9 @@ namespace SupaTrupa.WebAPI.Shared.Contracts
     public interface IRepository<T, TKey> where T : IEntity<TKey>
     {
         /// <summary>
-        /// Returns the T by its given id.
+        /// Returns an entity by its given id.
         /// </summary>
-        /// <param name="id">The value representing the ObjectId of the entity to retrieve.</param>
+        /// <param name="id">The value representing the identifier of the entity to retrieve.</param>
         /// <returns>The Entity T.</returns>
         Task<T> GetAsync(TKey id);
 
@@ -24,7 +24,7 @@ namespace SupaTrupa.WebAPI.Shared.Contracts
         /// Returns the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
-        Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate);
 
         /// <summary>
         /// Adds the new entity in the repository.

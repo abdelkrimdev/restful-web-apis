@@ -69,12 +69,12 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
             _collection = MongoService.GetCollectionFromUrl<T>(url, collectionName);
         }
 
-        /// <summary>
-        /// Returns the T by its given id.
-        /// </summary>
-        /// <param name="id">The Id of the entity to retrieve.</param>
-        /// <returns>The Entity T.</returns>
-        public virtual async Task<T> GetAsync(TKey id)
+		/// <summary>
+		/// Returns an entity by its given id.
+		/// </summary>
+		/// <param name="id">The Id of the entity to retrieve.</param>
+		/// <returns>The Entity T.</returns>
+		public virtual async Task<T> GetAsync(TKey id)
         {
             return (await GetAsync(e => e.Id.Equals(id))).SingleOrDefault();
         }
@@ -83,7 +83,7 @@ namespace SupaTrupa.WebAPI.Shared.MongoDb
         /// Returns the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
-        public virtual async Task<IEnumerable<T>> GetAsync(Expression<Func<T, bool>> predicate)
+        public virtual async Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate)
         {
             return await Task.Run(() => _collection.AsQueryable().Where(predicate));
         }
