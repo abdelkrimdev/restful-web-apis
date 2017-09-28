@@ -80,41 +80,41 @@ namespace SupaTrupa.WebAPI.Tests.Shared.MongoDb
         public async Task AddEntitiesAsyncTest()
         {
             // Arrange
-            var persons = A.ListOf<Person>();
+            var people = A.ListOf<Person>();
 
 			// Act
-            await _personRepository.AddAsync(persons);
+            await _personRepository.AddAsync(people);
 
             // Assert
-            Assert.AreEqual(persons.Count, _personRepository.Count());
+            Assert.AreEqual(people.Count, _personRepository.Count());
         }
 
         [Test]
         public async Task UpdateAsyncTest()
 		{
 			// Arrange
-            var persons = A.ListOf<Person>();
-            await _personRepository.AddAsync(persons);
+            var people = A.ListOf<Person>();
+            await _personRepository.AddAsync(people);
 
-			foreach (var person in persons)
+			foreach (var person in people)
 			{
 				person.Single = false;
                 person.Address.Country = person.Address.Country.ToUpper();
 			}
 
 			// Act
-            await _personRepository.UpdateAsync(persons);
+            await _personRepository.UpdateAsync(people);
 
             // Assert
-            var updatedPersons = await _personRepository.GetAsync(p => !p.Single);
+            var updatedPeople = await _personRepository.GetAsync(p => !p.Single);
 			
-            Assert.NotNull(updatedPersons);
-			Assert.AreEqual(persons.Count, updatedPersons.Count());
+            Assert.NotNull(updatedPeople);
+			Assert.AreEqual(people.Count, updatedPeople.Count());
 
-            for (int index = 0, count = persons.Count; index < count; index++)
+            for (int index = 0, count = people.Count; index < count; index++)
             {
-                Assert.AreEqual(persons[index].Address.Country,
-                                updatedPersons.ElementAt(index).Address.Country);
+                Assert.AreEqual(people[index].Address.Country,
+                                updatedPeople.ElementAt(index).Address.Country);
             }
         }
 
@@ -136,8 +136,8 @@ namespace SupaTrupa.WebAPI.Tests.Shared.MongoDb
 		public async Task DeleteEntitiesAsyncTest()
 		{
 			// Arrange
-			var persons = A.ListOf<Person>();
-			await _personRepository.AddAsync(persons);
+			var people = A.ListOf<Person>();
+			await _personRepository.AddAsync(people);
 
             // Act
             await _personRepository.DeleteAsync(p => p.Single);
