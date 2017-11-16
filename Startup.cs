@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using FluentValidation.AspNetCore;
 
 using SupaTrupa.WebAPI.Settings;
 using SupaTrupa.WebAPI.Shared.Contracts;
@@ -44,7 +45,10 @@ namespace SupaTrupa.WebAPI
                     implementationType: typeof(MongoRepository<>)
                 )
                 .AddCors()
-                .AddMvc();
+                .AddMvc()
+                .AddFluentValidation(
+                    config => config.RegisterValidatorsFromAssemblyContaining<Startup>()
+                );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
