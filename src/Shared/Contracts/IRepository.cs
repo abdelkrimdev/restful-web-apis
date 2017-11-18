@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
@@ -88,6 +87,7 @@ namespace SupaTrupa.WebAPI.Shared.Contracts
     /// </summary>
     /// <typeparam name="T">The type contained in the repository.</typeparam>
     /// <remarks>Entities are assumed to use strings for Id's.</remarks>
-    public interface IRepository<T> : IRepository<T, string> where T : IEntity<string>
+    public interface IRepository<T> : IRepository<T, string>
+        where T : IEntity<string>
     { }
 }
