@@ -5,9 +5,9 @@ using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using NUnit.Framework;
 
-using SupaTrupa.WebAPI.Settings;
 using SupaTrupa.WebAPI.Shared.Contracts;
 using SupaTrupa.WebAPI.Shared.MongoDb;
+using SupaTrupa.WebAPI.Shared.Settings;
 
 using SupaTrupa.WebAPI.Tests.Shared.Entities;
 
