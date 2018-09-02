@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoApi", "TodoApi\TodoApi.csproj", "{F981C161-6AB4-4CB9-9240-BE8C10504027}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SupaTrupa.WebAPI", "SupaTrupa.WebAPI\SupaTrupa.WebAPI.csproj", "{061D5954-4CBE-431B-94CA-6F0D91987B3B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{59C1E240-87DE-4E3C-8F41-88946AAB0355}"
 EndProject
 Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "DockerCompose", "DockerCompose.dcproj", "{5D3C9B38-CF23-4AD5-A9A7-553300E95C1C}"
@@ -24,10 +22,6 @@ Global
 		{F981C161-6AB4-4CB9-9240-BE8C10504027}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F981C161-6AB4-4CB9-9240-BE8C10504027}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F981C161-6AB4-4CB9-9240-BE8C10504027}.Release|Any CPU.Build.0 = Release|Any CPU
-		{061D5954-4CBE-431B-94CA-6F0D91987B3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{061D5954-4CBE-431B-94CA-6F0D91987B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{061D5954-4CBE-431B-94CA-6F0D91987B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{061D5954-4CBE-431B-94CA-6F0D91987B3B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{59C1E240-87DE-4E3C-8F41-88946AAB0355}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{59C1E240-87DE-4E3C-8F41-88946AAB0355}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59C1E240-87DE-4E3C-8F41-88946AAB0355}.Release|Any CPU.ActiveCfg = Release|Any CPU
