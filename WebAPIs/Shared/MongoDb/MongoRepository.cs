@@ -67,12 +67,12 @@ namespace Shared.MongoDb
             _collection = MongoService.GetCollectionFromUrl<T>(url, collectionName);
         }
 
-		/// <summary>
-		/// Returns an entity by its given id.
-		/// </summary>
-		/// <param name="id">The Id of the entity to retrieve.</param>
-		/// <returns>The Entity T.</returns>
-		public virtual async Task<T> GetAsync(TKey id)
+        /// <summary>
+        /// Returns an entity by its given id.
+        /// </summary>
+        /// <param name="id">The Id of the entity to retrieve.</param>
+        /// <returns>The Entity T.</returns>
+        public virtual async Task<T> GetAsync(TKey id)
         {
             return (await GetAsync(e => e.Id.Equals(id))).SingleOrDefault();
         }

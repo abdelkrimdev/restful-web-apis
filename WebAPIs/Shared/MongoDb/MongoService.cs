@@ -17,8 +17,8 @@ namespace Shared.MongoDb
         /// <returns>Returns the default connection string from the appsettings.json file.</returns>
         public static string GetConnectionString(IOptions<MongoSettings> settings)
         {
-			if (settings == null)
-				throw new ArgumentNullException(nameof(settings));
+            if (settings == null)
+                throw new ArgumentNullException(nameof(settings));
 
             var mongo = settings.Value;
             return $"mongodb://{mongo.User}:{mongo.Pass}@{mongo.Host}:{mongo.Port}/{mongo.Data}";
@@ -32,9 +32,9 @@ namespace Shared.MongoDb
         /// <returns>Returns a MongoCollection from the specified type and connection string.</returns>
         public static IMongoCollection<T> GetCollectionFromConnectionString<T>(string connectionString)
         {
-			if (string.IsNullOrEmpty(connectionString))
-				throw new ArgumentNullException(nameof(connectionString));
-            
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentNullException(nameof(connectionString));
+
             return GetCollectionFromConnectionString<T>(connectionString, GetCollectionName<T>());
         }
 
@@ -52,7 +52,7 @@ namespace Shared.MongoDb
 
             if (string.IsNullOrEmpty(collectionName))
                 throw new ArgumentNullException(nameof(collectionName));
-            
+
             return GetDatabaseFromUrl(MongoUrl.Create(connectionString)).GetCollection<T>(collectionName);
         }
 
@@ -79,12 +79,12 @@ namespace Shared.MongoDb
         /// <returns>Returns a MongoCollection from the specified type and url.</returns>
         public static IMongoCollection<T> GetCollectionFromUrl<T>(MongoUrl url, string collectionName)
         {
-			if (url == null)
-				throw new ArgumentNullException(nameof(url));
+            if (url == null)
+                throw new ArgumentNullException(nameof(url));
 
             if (string.IsNullOrEmpty(collectionName))
-				throw new ArgumentNullException(nameof(collectionName));
-            
+                throw new ArgumentNullException(nameof(collectionName));
+
             return GetDatabaseFromUrl(url).GetCollection<T>(collectionName);
         }
 
@@ -95,9 +95,9 @@ namespace Shared.MongoDb
         /// <returns>Returns a MongoDatabase from the specified url.</returns>
         public static IMongoDatabase GetDatabaseFromUrl(MongoUrl url)
         {
-			if (url == null)
+            if (url == null)
                 throw new ArgumentNullException(nameof(url));
-            
+
             return GetClientFromUrl(url).GetDatabase(url.DatabaseName);
         }
 
@@ -111,7 +111,7 @@ namespace Shared.MongoDb
             if (url == null)
                 throw new ArgumentNullException(nameof(url));
 
-			return new MongoClient(url);
+            return new MongoClient(url);
         }
 
         /// <summary>

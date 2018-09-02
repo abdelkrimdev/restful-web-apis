@@ -68,18 +68,18 @@ namespace Shared.Contracts
         /// <param name="predicate">The expression.</param>
         Task DeleteAsync(Expression<Func<T, bool>> predicate);
 
-		/// <summary>
-		/// Checks if the entity exists for given predicate.
-		/// </summary>
-		/// <param name="predicate">The expression.</param>
-		/// <returns>True when an entity matching the predicate exists, false otherwise.</returns>
-		bool Exists(Expression<Func<T, bool>> predicate);
+        /// <summary>
+        /// Checks if the entity exists for given predicate.
+        /// </summary>
+        /// <param name="predicate">The expression.</param>
+        /// <returns>True when an entity matching the predicate exists, false otherwise.</returns>
+        bool Exists(Expression<Func<T, bool>> predicate);
 
-		/// <summary>
-		/// Counts the total entities in the repository.
-		/// </summary>
-		/// <returns>Count of entities in the repository.</returns>
-		long Count();
+        /// <summary>
+        /// Counts the total entities in the repository.
+        /// </summary>
+        /// <returns>Count of entities in the repository.</returns>
+        long Count();
     }
 
     /// <summary>
