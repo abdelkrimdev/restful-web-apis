@@ -1,19 +1,14 @@
-using System.Linq;
-using System.Threading.Tasks;
 using GenFu;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 using NUnit.Framework;
+using Shared.Contracts;
+using Shared.MongoDb;
+using Shared.Tests.Entities;
+using System.Linq;
+using System.Threading.Tasks;
 
-using SupaTrupa.WebAPI.Shared.Contracts;
-using SupaTrupa.WebAPI.Shared.MongoDb;
-using SupaTrupa.WebAPI.Shared.Settings;
-
-using SupaTrupa.WebAPI.Tests.Shared.Entities;
-
-#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
-
-namespace SupaTrupa.WebAPI.Tests.Shared.MongoDb
+namespace Shared.Tests.MongoDb
 {
     [TestFixture]
     public class MongoRepositoryTests
@@ -36,9 +31,9 @@ namespace SupaTrupa.WebAPI.Tests.Shared.MongoDb
 			_personRepository = new MongoRepository<Person>(_settings);
 
             A.Configure<Person>()
-             .Fill(p => p.Single, true)
-             .Fill(p => p.Address, A.New<Address>());
-		}
+             .Fill(p => p.Address, A.New<Address>())
+             .Fill(p => p.Single, true);
+        }
 
 		[TearDown]
 		public void DropDataBase()
@@ -47,7 +42,7 @@ namespace SupaTrupa.WebAPI.Tests.Shared.MongoDb
 			MongoService.GetClientFromUrl(mongoUrl).DropDatabase(mongoUrl.DatabaseName);
 		}
 
-		[Test]
+        [Test]
         public async Task GetAsyncTest()
 		{
 			// Arrange

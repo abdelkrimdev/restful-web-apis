@@ -1,6 +1,6 @@
-using SupaTrupa.WebAPI.Shared.Abstracts;
+using Shared.Abstracts;
 
-namespace SupaTrupa.WebAPI.Tests.Shared.Entities
+namespace Shared.Tests.Entities
 {
     public class Address : Entity
     {
