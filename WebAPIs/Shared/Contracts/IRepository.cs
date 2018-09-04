@@ -23,7 +23,15 @@ namespace Shared.Contracts
         /// Returns the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
+        /// <returns>The Entities IEnumerable of T.</returns>
         Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate);
+        /// <summary>
+        /// Returns the entities by page.
+        /// </summary>
+        /// <param name="number">The page number.</param>
+        /// <param name="size">The page size.</param>
+        /// <returns>The Entities IEnumerable of T.</returns>
+        Task<IEnumerable<T>> GetAsync(int number, int size);
 
         /// <summary>
         /// Adds the new entity in the repository.

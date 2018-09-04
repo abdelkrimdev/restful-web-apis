@@ -81,9 +81,21 @@ namespace Shared.MongoDb
         /// Returns the entities matching the predicate.
         /// </summary>
         /// <param name="predicate">The expression.</param>
+        /// <returns>The Entities IEnumerable of T.</returns>
         public virtual async Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate)
         {
             return await Task.Run(() => _collection.AsQueryable().Where(predicate));
+        }
+
+        /// <summary>
+        /// Returns entities by page.
+        /// </summary>
+        /// <param name="number">The page number.</param>
+        /// <param name="size">The page size.</param>
+        /// <returns>The Entities IEnumerable of T.</returns>
+        public virtual async Task<IEnumerable<T>> GetAsync(int number, int size)
+        {
+            return await Task.Run(() => _collection.AsQueryable().Skip(number * size).Take(size));
         }
 
         /// <summary>
