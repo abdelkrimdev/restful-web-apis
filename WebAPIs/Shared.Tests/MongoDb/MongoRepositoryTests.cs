@@ -14,49 +14,66 @@ namespace Shared.Tests.MongoDb
     public class MongoRepositoryTests
     {
         IOptions<MongoSettings> _settings;
-		IRepository<Person> _personRepository;
+        IRepository<Person> _personRepository;
 
-		[SetUp]
-		public void Initialize()
-		{
-			_settings = Options.Create(new MongoSettings
-			{
-				User = "iodine",
-				Pass = "secret",
-				Host = "localhost",
-				Port = "27017",
-				Data = "supaTrupaLab"
-			});
+        [SetUp]
+        public void Initialize()
+        {
+            _settings = Options.Create(new MongoSettings
+            {
+                User = "iodine",
+                Pass = "secret",
+                Host = "localhost",
+                Port = "27017",
+                Data = "supaTrupaLab"
+            });
 
-			_personRepository = new MongoRepository<Person>(_settings);
+            _personRepository = new MongoRepository<Person>(_settings);
 
             A.Configure<Person>()
              .Fill(p => p.Address, A.New<Address>())
              .Fill(p => p.Single, true);
         }
 
-		[TearDown]
-		public void DropDataBase()
-		{
+        [TearDown]
+        public void DropDataBase()
+        {
             var mongoUrl = MongoUrl.Create(MongoService.GetConnectionString(_settings));
-			MongoService.GetClientFromUrl(mongoUrl).DropDatabase(mongoUrl.DatabaseName);
-		}
+            MongoService.GetClientFromUrl(mongoUrl).DropDatabase(mongoUrl.DatabaseName);
+        }
 
         [Test]
         public async Task GetAsyncTest()
-		{
-			// Arrange
-			var person = A.New<Person>();
-			await _personRepository.AddAsync(person);
-			
-            // Act
-			var addedPerson = await _personRepository.GetAsync(person.Id);
+        {
+            // Arrange
+            var person = A.New<Person>();
+            await _personRepository.AddAsync(person);
 
-			// Assert
-			Assert.NotNull(addedPerson);
+            // Act
+            var addedPerson = await _personRepository.GetAsync(person.Id);
+
+            // Assert
+            Assert.NotNull(addedPerson);
             Assert.AreEqual(person.Id, addedPerson.Id);
             Assert.AreEqual(person.Address.Id, addedPerson.Address.Id);
-		}
+        }
+
+        [Test]
+        public async Task GetAsyncByPageTest()
+        {
+            // Arrange
+            int pageNumber = 2, pageSize = 15;
+            var people = A.ListOf<Person>(100);
+            await _personRepository.AddAsync(people);
+
+            // Act
+            var peoplePage = await _personRepository.GetAsync(pageNumber, pageSize);
+
+            // Assert
+            Assert.NotNull(peoplePage);
+            Assert.AreEqual(peoplePage.Count(), pageSize);
+            Assert.AreEqual(people.ElementAt(pageSize * pageNumber).Id, peoplePage.ElementAt(0).Id);
+        }
 
         [Test]
         public async Task AddEntityAsyncTest()
@@ -77,7 +94,7 @@ namespace Shared.Tests.MongoDb
             // Arrange
             var people = A.ListOf<Person>();
 
-			// Act
+            // Act
             await _personRepository.AddAsync(people);
 
             // Assert
@@ -86,25 +103,25 @@ namespace Shared.Tests.MongoDb
 
         [Test]
         public async Task UpdateAsyncTest()
-		{
-			// Arrange
+        {
+            // Arrange
             var people = A.ListOf<Person>();
             await _personRepository.AddAsync(people);
 
-			foreach (var person in people)
-			{
-				person.Single = false;
+            foreach (var person in people)
+            {
+                person.Single = false;
                 person.Address.Country = person.Address.Country.ToUpper();
-			}
+            }
 
-			// Act
+            // Act
             await _personRepository.UpdateAsync(people);
 
             // Assert
             var updatedPeople = await _personRepository.GetAsync(p => !p.Single);
-			
+
             Assert.NotNull(updatedPeople);
-			Assert.AreEqual(people.Count, updatedPeople.Count());
+            Assert.AreEqual(people.Count, updatedPeople.Count());
 
             for (int index = 0, count = people.Count; index < count; index++)
             {
@@ -113,32 +130,32 @@ namespace Shared.Tests.MongoDb
             }
         }
 
-		[Test]
-		public async Task DeleteEntityAsyncTest()
-		{
-			// Arrange
-			var person = A.New<Person>();
-			await _personRepository.AddAsync(person);
+        [Test]
+        public async Task DeleteEntityAsyncTest()
+        {
+            // Arrange
+            var person = A.New<Person>();
+            await _personRepository.AddAsync(person);
 
             // Act
             await _personRepository.DeleteAsync(person);
 
-			// Assert
+            // Assert
             Assert.False(_personRepository.Exists(p => p.Id == person.Id));
-		}
+        }
 
-		[Test]
-		public async Task DeleteEntitiesAsyncTest()
-		{
-			// Arrange
-			var people = A.ListOf<Person>();
-			await _personRepository.AddAsync(people);
+        [Test]
+        public async Task DeleteEntitiesAsyncTest()
+        {
+            // Arrange
+            var people = A.ListOf<Person>();
+            await _personRepository.AddAsync(people);
 
             // Act
             await _personRepository.DeleteAsync(p => p.Single);
 
-			// Assert
+            // Assert
             Assert.Zero(_personRepository.Count());
-		}
-	}
+        }
+    }
 }
