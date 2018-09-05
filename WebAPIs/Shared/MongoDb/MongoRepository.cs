@@ -90,12 +90,14 @@ namespace Shared.MongoDb
         /// <summary>
         /// Returns entities by page.
         /// </summary>
-        /// <param name="number">The page number.</param>
-        /// <param name="size">The page size.</param>
+        /// <param name="pageNo">The page number.</param>
+        /// <param name="pageSize">The page size.</param>
         /// <returns>The Entities IEnumerable of T.</returns>
-        public virtual async Task<IEnumerable<T>> GetAsync(int number, int size)
+        public virtual async Task<IEnumerable<T>> GetAsync(int pageNo, int pageSize)
         {
-            return await Task.Run(() => _collection.AsQueryable().Skip(number * size).Take(size));
+            return await Task.Run(() => _collection.AsQueryable()
+                                  .Skip((pageNo - 1) * pageSize)
+                                  .Take(pageSize));
         }
 
         /// <summary>

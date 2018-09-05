@@ -72,7 +72,7 @@ namespace Shared.Tests.MongoDb
             // Assert
             Assert.NotNull(peoplePage);
             Assert.AreEqual(peoplePage.Count(), pageSize);
-            Assert.AreEqual(people.ElementAt(pageSize * pageNumber).Id, peoplePage.ElementAt(0).Id);
+            Assert.AreEqual(people.ElementAt((pageNumber - 1) * pageSize).Id, peoplePage.ElementAt(0).Id);
         }
 
         [Test]

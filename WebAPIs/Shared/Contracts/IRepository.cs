@@ -28,10 +28,10 @@ namespace Shared.Contracts
         /// <summary>
         /// Returns the entities by page.
         /// </summary>
-        /// <param name="number">The page number.</param>
-        /// <param name="size">The page size.</param>
+        /// <param name="pageNo">The page number.</param>
+        /// <param name="pageSize">The page size.</param>
         /// <returns>The Entities IEnumerable of T.</returns>
-        Task<IEnumerable<T>> GetAsync(int number, int size);
+        Task<IEnumerable<T>> GetAsync(int pageNo, int pageSize);
 
         /// <summary>
         /// Adds the new entity in the repository.
