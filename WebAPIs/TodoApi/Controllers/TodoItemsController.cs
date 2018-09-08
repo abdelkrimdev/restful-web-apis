@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Shared.Contracts;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TodoApi.Models;
@@ -18,7 +17,7 @@ namespace TodoApi.Controllers
             _todoItemsRepository = todoItemsRepository;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "GetTodos")]
         public async Task<ActionResult<IEnumerable<TodoItem>>> Get(int pageNo = 1, int pageSize = 50)
         {
             var todos = await _todoItemsRepository.GetAsync(pageNo, pageSize);
@@ -26,7 +25,7 @@ namespace TodoApi.Controllers
             return Ok(todos);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id}", Name = "GetTodo")]
         public async Task<ActionResult<TodoItem>> Get(string id)
         {
             var item = await _todoItemsRepository.GetAsync(id);
@@ -37,7 +36,7 @@ namespace TodoApi.Controllers
             return Ok(item);
         }
 
-        [HttpPost]
+        [HttpPost(Name = "CreateTodo)")]
         public async Task<IActionResult> Post([FromBody] TodoItem item)
         {
             if (item == null)
@@ -45,16 +44,16 @@ namespace TodoApi.Controllers
 
             await _todoItemsRepository.AddAsync(item);
 
-            return Created($"{Request.Scheme}://{Request.Host}{Request.Path}/{item.Id}", item);
+            return CreatedAtRoute("GetTodo", new { item.Id }, item);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id}", Name = "UpdateTodo")]
         public async Task<IActionResult> Put(string id, [FromBody] TodoItem item)
         {
             if (item == null)
                 return BadRequest();
 
-            if (_todoItemsRepository.Exists(i => i.Id == id))
+            if (!_todoItemsRepository.Exists(i => i.Id == id))
                 return NotFound();
 
             if (item.Id == null || item.Id != id)
@@ -65,10 +64,10 @@ namespace TodoApi.Controllers
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}", Name = "DeleteTodo")]
         public async Task<IActionResult> Delete(string id)
         {
-            if (_todoItemsRepository.Exists(i => i.Id == id))
+            if (!_todoItemsRepository.Exists(i => i.Id == id))
                 return NotFound();
 
             await _todoItemsRepository.DeleteAsync(id);
