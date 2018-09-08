@@ -77,6 +77,43 @@ namespace TodoApi.Tests.Controllers
         }
 
         [Test]
+        public async Task PostAsync_ShouldReturnBadRequestWhenInputIsNull()
+        {
+            // Arrange
+            var todoItemsRepository = Substitute.For<IRepository<TodoItem>>();
+            var controller = new TodoItemsController(todoItemsRepository);
+
+            // Act
+            var response = await controller.Post(null);
+
+            // Assert
+            Assert.IsInstanceOf(typeof(BadRequestResult), response);
+        }
+
+        [Test]
+        public async Task PostAsync_ShouldReturnCreatedWhenTodoItemIsAdded()
+        {
+            A.Configure<TodoItem>().Fill(i => i.Id, string.Empty);
+
+            // Arrange
+            var todo = A.New<TodoItem>();
+            var todoItemsRepository = Substitute.For<IRepository<TodoItem>>();
+            var controller = new TodoItemsController(todoItemsRepository);
+
+            // Act
+            var response = await controller.Post(todo);
+            var result = response as CreatedAtRouteResult;
+            var value = result.Value as TodoItem;
+            var statusCode = result.StatusCode;
+
+            // Assert
+            Assert.IsNotNull(value);
+            Assert.IsNotNull(statusCode);
+            Assert.AreEqual(value.Id, todo.Id);
+            Assert.AreEqual(statusCode, 201);
+        }
+
+        [Test]
         public async Task PutAsync_ShouldReturnBadRequestWhenInputIsNull()
         {
             // Arrange
