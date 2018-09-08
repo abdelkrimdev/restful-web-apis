@@ -49,12 +49,9 @@ namespace TodoApi.Tests.Controllers
 
             // Act
             var response = await controller.Get(id);
-            var result = response.Result as NotFoundResult;
-            var statusCode = result.StatusCode;
 
             // Assert
-            Assert.IsNotNull(statusCode);
-            Assert.AreEqual(statusCode, 404);
+            Assert.IsInstanceOf(typeof(NotFoundResult), response.Result);
         }
 
         [Test]
@@ -77,6 +74,38 @@ namespace TodoApi.Tests.Controllers
             Assert.IsNotNull(statusCode);
             Assert.AreEqual(value.Id, todo.Id);
             Assert.AreEqual(statusCode, 200);
+        }
+
+        [Test]
+        public async Task DeleteAsync_ShouldReturnNotFoundWhenTodoItemIsMissing()
+        {
+            // Arrange
+            var id = Guid.NewGuid().ToString();
+            var todoItemsRepository = Substitute.For<IRepository<TodoItem>>();
+            todoItemsRepository.Exists(i => i.Id == id).ReturnsForAnyArgs(false);
+            var controller = new TodoItemsController(todoItemsRepository);
+
+            // Act
+            var response = await controller.Delete(id);
+
+            // Assert
+            Assert.IsInstanceOf(typeof(NotFoundResult), response);
+        }
+
+        [Test]
+        public async Task DeleteAsync_ShouldReturnNoContentWhenTodoItemIsDeleted()
+        {
+            // Arrange
+            var id = Guid.NewGuid().ToString();
+            var todoItemsRepository = Substitute.For<IRepository<TodoItem>>();
+            todoItemsRepository.Exists(i => i.Id == id).ReturnsForAnyArgs(true);
+            var controller = new TodoItemsController(todoItemsRepository);
+
+            // Act
+            var response = await controller.Delete(id);
+
+            // Assert
+            Assert.IsInstanceOf(typeof(NoContentResult), response);
         }
     }
 }
