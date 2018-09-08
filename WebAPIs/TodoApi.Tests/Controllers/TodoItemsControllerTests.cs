@@ -77,6 +77,53 @@ namespace TodoApi.Tests.Controllers
         }
 
         [Test]
+        public async Task PutAsync_ShouldReturnBadRequestWhenInputIsNull()
+        {
+            // Arrange
+            var id = Guid.NewGuid().ToString();
+            var todoItemsRepository = Substitute.For<IRepository<TodoItem>>();
+            var controller = new TodoItemsController(todoItemsRepository);
+
+            // Act
+            var response = await controller.Put(id, null);
+
+            // Assert
+            Assert.IsInstanceOf(typeof(BadRequestResult), response);
+        }
+
+        [Test]
+        public async Task PutAsync_ShouldReturnNotFoundWhenTodoItemIsMissing()
+        {
+            // Arrange
+            var todo = A.New<TodoItem>();
+            var todoItemsRepository = Substitute.For<IRepository<TodoItem>>();
+            todoItemsRepository.Exists(i => i.Id == todo.Id).ReturnsForAnyArgs(false);
+            var controller = new TodoItemsController(todoItemsRepository);
+
+            // Act
+            var response = await controller.Put(todo.Id, todo);
+
+            // Assert
+            Assert.IsInstanceOf(typeof(NotFoundResult), response);
+        }
+
+        [Test]
+        public async Task PutAsync_ShouldReturnNoContentWhenTodoItemIsUpdated()
+        {
+            // Arrange
+            var todo = A.New<TodoItem>();
+            var todoItemsRepository = Substitute.For<IRepository<TodoItem>>();
+            todoItemsRepository.Exists(i => i.Id == todo.Id).ReturnsForAnyArgs(true);
+            var controller = new TodoItemsController(todoItemsRepository);
+
+            // Act
+            var response = await controller.Put(todo.Id, todo);
+
+            // Assert
+            Assert.IsInstanceOf(typeof(NoContentResult), response);
+        }
+
+        [Test]
         public async Task DeleteAsync_ShouldReturnNotFoundWhenTodoItemIsMissing()
         {
             // Arrange
