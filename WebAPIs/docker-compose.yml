@@ -6,3 +6,13 @@ services:
     build:
       context: .
       dockerfile: TodoApi/Dockerfile
+    links:
+      - tododb
+    depends_on:
+      - tododb
+  tododb:
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017"
