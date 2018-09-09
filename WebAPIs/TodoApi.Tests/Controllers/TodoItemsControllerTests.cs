@@ -111,6 +111,9 @@ namespace TodoApi.Tests.Controllers
             Assert.IsNotNull(statusCode);
             Assert.AreEqual(value.Id, todo.Id);
             Assert.AreEqual(statusCode, 201);
+            Assert.True(result.RouteValues.ContainsKey("Id"));
+            Assert.AreEqual(result.RouteValues.GetValueOrDefault("Id"), todo.Id);
+            Assert.AreEqual(result.RouteName, "GetTodo");
         }
 
         [Test]
