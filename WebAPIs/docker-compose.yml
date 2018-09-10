@@ -14,5 +14,4 @@ services:
     image: mongo
     volumes:
       - ./data:/data/db
-    ports:
-      - "27017"
+      - "./mongo-createuser-entrypoint.sh:/docker-entrypoint-initdb.d/"
