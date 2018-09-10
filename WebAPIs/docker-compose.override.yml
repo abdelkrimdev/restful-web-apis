@@ -5,4 +5,7 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "80"
+      - "8080:80"
+  tododb:
+    ports:
+      - "27018:27017"
