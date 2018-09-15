@@ -28,6 +28,7 @@ tarballs/
 test-results/
 Thumbs.db
 .vs/
+.env
 
 # Mac bundle stuff
 *.dmg
@@ -40,5 +41,5 @@ Thumbs.db
 # dotCover
 *.dotCover
 
-# Docker volumes
-data/
+# MongoDB data directory
+database/
