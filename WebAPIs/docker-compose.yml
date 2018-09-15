@@ -7,6 +7,8 @@ services:
       - TODO_MONGO_DB=${TODO_MONGO_DB}
       - TODO_MONGO_USER=${TODO_MONGO_USER}
       - TODO_MONGO_PASS=${TODO_MONGO_PASS}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_ROOT_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
     volumes:
       - ./database:/data/db
       - ./scripts:/docker-entrypoint-initdb.d
