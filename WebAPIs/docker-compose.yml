@@ -1,6 +1,15 @@
 version: '3.4'
 
 services:
+  tododb:
+    image: mongo
+    environment:
+      - TODO_MONGO_DB=${TODO_MONGO_DB}
+      - TODO_MONGO_USER=${TODO_MONGO_USER}
+      - TODO_MONGO_PASS=${TODO_MONGO_PASS}
+    volumes:
+      - ./database:/data/db
+      - ./scripts:/docker-entrypoint-initdb.d
   todoapi:
     image: ${DOCKER_REGISTRY}todoapi
     build:
@@ -10,8 +19,3 @@ services:
       - tododb
     depends_on:
       - tododb
-  tododb:
-    image: mongo
-    volumes:
-      - ./data:/data/db
-      - "./mongo-createuser-entrypoint.sh:/docker-entrypoint-initdb.d/"
