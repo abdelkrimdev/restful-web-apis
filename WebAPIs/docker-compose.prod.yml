@@ -1,0 +1,11 @@
+version: '3.4'
+
+services:
+  todoapi:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+    ports:
+      - "80:80"
+  tododb:
+    ports:
+      - "27017:27017"
