@@ -21,11 +21,11 @@ namespace Shared.Tests.MongoDb
         {
             _settings = Options.Create(new MongoSettings
             {
-                User = "iodine",
-                Pass = "secret",
                 Host = "localhost",
                 Port = "27017",
-                Data = "supaTrupaLab"
+                User = "TestUser",
+                Pass = "Secret",
+                Data = "TestDatabase"
             });
 
             _personRepository = new MongoRepository<Person>(_settings);
