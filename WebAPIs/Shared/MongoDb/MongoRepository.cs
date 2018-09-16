@@ -171,7 +171,6 @@ namespace Shared.MongoDb
             return _collection.AsQueryable().Any(predicate);
         }
 
-
         /// <summary>
         /// Counts the total entities in the repository.
         /// </summary>

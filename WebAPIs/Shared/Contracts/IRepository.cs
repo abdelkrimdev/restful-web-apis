@@ -25,6 +25,7 @@ namespace Shared.Contracts
         /// <param name="predicate">The expression.</param>
         /// <returns>The Entities IEnumerable of T.</returns>
         Task<IEnumerable<T>> GetAsync(Func<T, bool> predicate);
+
         /// <summary>
         /// Returns the entities by page.
         /// </summary>
