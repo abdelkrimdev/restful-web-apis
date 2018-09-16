@@ -13,16 +13,16 @@ services:
       - ./database:/data/db
       - ./scripts:/docker-entrypoint-initdb.d
   todoapi:
-    image: ${DOCKER_REGISTRY}todoapi
+    image: todoapi
+    build:
+      context: .
+      dockerfile: TodoApi/Dockerfile
     environment:
       - MONGO_HOST=${MONGO_HOST}
       - MONGO_PORT=${MONGO_PORT}
       - TODO_MONGO_DB=${TODO_MONGO_DB}
       - TODO_MONGO_USER=${TODO_MONGO_USER}
       - TODO_MONGO_PASS=${TODO_MONGO_PASS}
-    build:
-      context: .
-      dockerfile: TodoApi/Dockerfile
     links:
       - tododb
     depends_on:
