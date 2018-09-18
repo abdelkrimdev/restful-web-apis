@@ -4,11 +4,15 @@ EXPOSE 80
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
-COPY TodoApi/TodoApi.csproj TodoApi/
-RUN dotnet restore TodoApi/TodoApi.csproj
 COPY . .
 WORKDIR /src/TodoApi
-RUN dotnet build TodoApi.csproj -c Release -o /app
+RUN dotnet restore
+RUN dotnet build -c Release -o /app
+
+FROM build AS test
+WORKDIR /src/TodoApi.Tests
+RUN dotnet restore
+RUN dotnet test
 
 FROM build AS publish
 RUN dotnet publish TodoApi.csproj -c Release -o /app
