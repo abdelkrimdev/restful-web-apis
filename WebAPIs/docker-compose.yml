@@ -18,7 +18,7 @@ services:
       context: .
       dockerfile: TodoApi/Dockerfile
     environment:
-      - MONGO_HOST=${MONGO_HOST}
+      - TODO_MONGO_HOST=${TODO_MONGO_HOST}
       - MONGO_PORT=${MONGO_PORT}
       - TODO_MONGO_DB=${TODO_MONGO_DB}
       - TODO_MONGO_USER=${TODO_MONGO_USER}

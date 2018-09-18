@@ -24,7 +24,7 @@ namespace TodoApi
                 .Configure<MongoSettings>(
                     (options) =>
                     {
-                        options.Host = Configuration.GetValue<string>("MONGO_HOST");
+                        options.Host = Configuration.GetValue<string>("TODO_MONGO_HOST");
                         options.Port = Configuration.GetValue<string>("MONGO_PORT");
                         options.User = Configuration.GetValue<string>("TODO_MONGO_USER");
                         options.Pass = Configuration.GetValue<string>("TODO_MONGO_PASS");
