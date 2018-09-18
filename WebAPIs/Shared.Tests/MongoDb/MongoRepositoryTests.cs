@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Shared.Contracts;
 using Shared.MongoDb;
 using Shared.Tests.Entities;
+using Shared.Tests.Utilities;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -19,14 +20,10 @@ namespace Shared.Tests.MongoDb
         [SetUp]
         public void Initialize()
         {
-            _settings = Options.Create(new MongoSettings
-            {
-                Host = "localhost",
-                Port = "27017",
-                User = "TestUser",
-                Pass = "Secret",
-                Data = "TestDatabase"
-            });
+            var text = FileUtils.Read(@"Parameters/testParameters.json");
+            var mongoSettings = JSONUtils.Deserialize<MongoSettings>(text);
+
+            _settings = Options.Create(mongoSettings);
 
             _personRepository = new MongoRepository<Person>(_settings);
 
