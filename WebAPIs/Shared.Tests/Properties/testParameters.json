@@ -1,5 +1,5 @@
 ﻿{
-  "Host": "localhost",
+  "Host": "testdb",
   "Port": "27017",
   "User": "TestUser",
   "Pass": "Secret",
