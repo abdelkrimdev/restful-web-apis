@@ -20,7 +20,7 @@ namespace Shared.Tests.MongoDb
         [SetUp]
         public void Initialize()
         {
-            var text = FileUtils.Read(@"Parameters/testParameters.json");
+            var text = FileUtils.Read(@"Properties/testParameters.json");
             var mongoSettings = JSONUtils.Deserialize<MongoSettings>(text);
 
             _settings = Options.Create(mongoSettings);
