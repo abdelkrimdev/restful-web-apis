@@ -9,6 +9,8 @@ services:
       - TODO_MONGO_PASS=Secret
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
+    ports:
+      - "27010:27017"
   libraries:
     image: todoapi
     build:
