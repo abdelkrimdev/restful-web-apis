@@ -3,4 +3,4 @@ WORKDIR /src
 COPY . .
 WORKDIR /src/Shared.Tests
 RUN dotnet restore
-RUN dotnet test
+ENTRYPOINT ["dotnet", "test"]
