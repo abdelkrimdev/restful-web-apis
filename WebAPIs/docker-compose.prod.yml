@@ -7,5 +7,7 @@ services:
     ports:
       - "80:80"
   tododb:
+    volumes:
+      - ./database:/data/db
     ports:
       - "27017:27017"
