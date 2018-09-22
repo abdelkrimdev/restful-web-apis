@@ -12,7 +12,7 @@ services:
     ports:
       - "27010:27017"
   libraries:
-    image: todoapi
+    image: libraries
     build:
       context: .
       dockerfile: Shared/Dockerfile
