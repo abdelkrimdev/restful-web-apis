@@ -1,25 +1,6 @@
 version: '3.4'
 
 services:
-  testdb:
-    image: mongo
-    environment:
-      - TODO_MONGO_DB=TestDatabase
-      - TODO_MONGO_USER=TestUser
-      - TODO_MONGO_PASS=Secret
-    volumes:
-      - ./scripts:/docker-entrypoint-initdb.d
-    ports:
-      - "27010:27017"
-  libraries:
-    image: libraries
-    build:
-      context: .
-      dockerfile: Shared/Dockerfile
-    links:
-      - testdb
-    depends_on:
-      - testdb
   todoapi:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
