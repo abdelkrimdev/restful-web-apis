@@ -12,7 +12,7 @@ RUN dotnet build -c Release -o /app
 FROM build AS test
 WORKDIR /src/TodoApi.Tests
 RUN dotnet restore
-RUN dotnet test
+RUN dotnet test --logger trx
 
 FROM build AS publish
 RUN dotnet publish TodoApi.csproj -c Release -o /app
