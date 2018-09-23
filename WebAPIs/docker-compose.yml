@@ -12,7 +12,7 @@ services:
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
   todoapi:
-    image: todoapi
+    image: ${DOCKER_REGISTRY}/todoapi
     build:
       context: .
       dockerfile: TodoApi/Dockerfile
