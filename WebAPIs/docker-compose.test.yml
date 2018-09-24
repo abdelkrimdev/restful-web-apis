@@ -11,24 +11,29 @@ services:
       - ./scripts:/docker-entrypoint-initdb.d
     ports:
       - "27016:27017"
-  libraries:
+  libraries.tests:
     image: libraries
     build:
       context: .
-      dockerfile: Shared/Dockerfile
+      dockerfile: Shared.Tests/Dockerfile
     volumes:
       - ./Shared.Tests/TestResults:/src/Shared.Tests/TestResults
     links:
       - testdb
     depends_on:
       - testdb
-  todoapi:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+  todo.tests:
+    image: todotests
+    build:
+      context: .
+      dockerfile: TodoApi.Tests/Dockerfile
     volumes:
       - ./TodoApi.Tests/TestResults:/src/TodoApi.Tests/TestResults
+  todo.api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "8080:80"
-  tododb:
+  todo.db:
     ports:
       - "27018:27017"
