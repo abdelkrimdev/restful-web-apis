@@ -1,11 +1,11 @@
 version: '3.4'
 
 services:
-  todoapi:
+  todo.api:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
     ports:
       - "8080:80"
-  tododb:
+  todo.db:
     ports:
       - "27018:27017"

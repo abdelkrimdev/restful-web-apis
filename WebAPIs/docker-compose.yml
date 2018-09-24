@@ -1,7 +1,7 @@
 version: '3.4'
 
 services:
-  tododb:
+  todo.db:
     image: mongo
     environment:
       - TODO_MONGO_DB=${TODO_MONGO_DB}
@@ -11,7 +11,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_ROOT_PASSWORD}
     volumes:
       - ./scripts:/docker-entrypoint-initdb.d
-  todoapi:
+  todo.api:
     image: ${DOCKER_REGISTRY}/todoapi
     build:
       context: .
@@ -23,6 +23,6 @@ services:
       - TODO_MONGO_USER=${TODO_MONGO_USER}
       - TODO_MONGO_PASS=${TODO_MONGO_PASS}
     links:
-      - tododb
+      - todo.db
     depends_on:
-      - tododb
+      - todo.db
