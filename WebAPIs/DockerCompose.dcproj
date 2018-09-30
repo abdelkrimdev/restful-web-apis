@@ -19,6 +19,7 @@
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
+    <None Include="docker-compose-service-fabric.yml" />
     <None Include=".dockerignore" />
     <None Include="scripts\createuser.sh" />
   </ItemGroup>
