@@ -44,6 +44,18 @@ steps:
     action: 'Build services'
 
 
+- task: CopyFiles@2
+  displayName: 'Copy Files to: $(Build.ArtifactStagingDirectory)'
+  inputs:
+    SourceFolder: WebAPIs
+
+    Contents: |
+     docker-compose.yml
+     docker-compose.prod.yml
+
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+
+
 - task: DockerCompose@0
   displayName: 'Push services'
   inputs:
@@ -60,3 +72,7 @@ steps:
     includeSourceTags: true
 
     includeLatestTag: true
+
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: drop'
