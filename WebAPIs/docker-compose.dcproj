@@ -20,6 +20,5 @@
     </None>
     <None Include="docker-compose.yml" />
     <None Include=".dockerignore" />
-    <None Include="scripts\createuser.sh" />
   </ItemGroup>
 </Project>
