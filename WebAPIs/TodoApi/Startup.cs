@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Shared.Contracts;
 using Shared.MongoDb;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace TodoApi
 {
@@ -35,6 +36,7 @@ namespace TodoApi
                     serviceType: typeof(IRepository<>),
                     implementationType: typeof(MongoRepository<>)
                 )
+                .AddSwaggerGen(options => options.SwaggerDoc("v1", new Info { Title = "Todo API", Version = "v1" }))
                 .AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -51,6 +53,17 @@ namespace TodoApi
             }
 
             app.UseHttpsRedirection();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(
+                (options) =>
+                {
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "Todo API");
+                    options.RoutePrefix = string.Empty;
+                }
+            );
+
             app.UseMvc();
         }
     }
