@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +26,7 @@ namespace TodoApi
                     (options) =>
                     {
                         options.Host = Configuration.GetValue<string>("TODO_MONGO_HOST");
-                        options.Port = Configuration.GetValue<string>("MONGO_PORT");
+                        options.Port = Configuration.GetValue<string>("TODO_MONGO_PORT");
                         options.User = Configuration.GetValue<string>("TODO_MONGO_USER");
                         options.Pass = Configuration.GetValue<string>("TODO_MONGO_PASS");
                         options.Data = Configuration.GetValue<string>("TODO_MONGO_DB");

@@ -18,7 +18,7 @@ services:
       dockerfile: TodoApi/Dockerfile
     environment:
       - TODO_MONGO_HOST=${TODO_MONGO_HOST}
-      - MONGO_PORT=${MONGO_PORT}
+      - TODO_MONGO_PORT=${TODO_MONGO_PORT}
       - TODO_MONGO_DB=${TODO_MONGO_DB}
       - TODO_MONGO_USER=${TODO_MONGO_USER}
       - TODO_MONGO_PASS=${TODO_MONGO_PASS}
