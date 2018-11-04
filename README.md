@@ -37,7 +37,7 @@ docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-co
 Set the following environment variables on your production docker host
 
 ```
-TODO_MONGO_HOST=tododb
+TODO_MONGO_HOST=todo.db
 TODO_MONGO_PORT=27017
 TODO_MONGO_DB=TodoDatabase
 TODO_MONGO_USER=TodoAPI
