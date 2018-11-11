@@ -12,6 +12,19 @@ These instructions will get you a copy of the project up and running on your loc
 
 Create a new file in the `WebAPIs` folder and name it `.env` to set the environment variables needed for the application to run.
 
+```
+TODO_MONGO_HOST=todo.db
+TODO_MONGO_PORT=27017
+TODO_MONGO_DB=TodoDatabase
+TODO_MONGO_USER=TodoAPI
+TODO_MONGO_PASS=Secret
+
+MONGO_ROOT_USERNAME=root_username
+MONGO_ROOT_PASSWORD=very_secure_password
+
+DOCKER_REGISTRY=your_docker_hub_username
+```
+
 ### Run the Application
 
 ```
@@ -34,25 +47,11 @@ docker-compose -f docker-compose.yml -f docker-compose.test.yml up --abort-on-co
 
 ## Deployment
 
-Set the following environment variables on your production docker host
+After setting the environment variables on your production docker host run the following commands:
 
 ```
-TODO_MONGO_HOST=todo.db
-TODO_MONGO_PORT=27017
-TODO_MONGO_DB=TodoDatabase
-TODO_MONGO_USER=TodoAPI
-TODO_MONGO_PASS=Secret
-
-MONGO_ROOT_USERNAME=root_username
-MONGO_ROOT_PASSWORD=very_secure_password
-
-DOCKER_REGISTRY=your_docker_hub_username
-```
-
-Once you’ve got everything setup and ready to go, run this command:
-
-```
-docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+docker-compose pull --quiet
+docker-compose -f docker-compose.yml -f docker-compose.prod.yml up --detach
 ```
 
 ## Built With
